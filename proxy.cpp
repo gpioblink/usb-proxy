@@ -256,6 +256,7 @@ void *ep_loop_read(void *arg) {
 			else {
 				printf("EP%x(%s_%s): read %d bytes from host", ep.bEndpointAddress,
 					transfer_type.c_str(), dir.c_str(), rv);
+				io.inner.length = rv;
 
 				// If a USB mass storage read request, display the address of the LBA and the number of sectors to be transferred.
 				const int USBMS_OPCODE_TEST_UNIT_READY = 0x00;
@@ -290,8 +291,6 @@ void *ep_loop_read(void *arg) {
 				} else {
 					printf("\n");
 				}
-
-				io.inner.length = rv;
 
 				if (injection_enabled)
 					injection(io, ep, transfer_type);
