@@ -254,8 +254,16 @@ void *ep_loop_read(void *arg) {
 				exit(EXIT_FAILURE);
 			}
 			else {
-				printf("EP%x(%s_%s): read %d bytes from host\n", ep.bEndpointAddress,
+				// If a USB mass storage read request, display the address of the LBA and the number of sectors to be transferred.
+				const int USBMS_OPCODE_READ = 0x28;
+				if (ep.bEndpointAddress == 0x02 && transfer_type == "bulk" && dir == "out" && io.data[15] == USBMS_OPCODE_READ) {
+					printf("EP%x(%s_%s): read %d bytes from host [ReadReq: Sector: %d, Length: %d]\n",
+						ep.bEndpointAddress, transfer_type.c_str(), dir.c_str(), rv,
+						io.data[15], io.data[22] << 8 | io.data[23]);
+				} else {
+					printf("EP%x(%s_%s): read %d bytes from host\n", ep.bEndpointAddress,
 						transfer_type.c_str(), dir.c_str(), rv);
+				}
 				io.inner.length = rv;
 
 				if (injection_enabled)
