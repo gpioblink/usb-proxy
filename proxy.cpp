@@ -265,7 +265,7 @@ void *ep_loop_read(void *arg) {
 				const int USBMS_OPCODE_READ = 0x28;
 				const int USBMS_OPCODE_WRITE = 0x2a;
 			
-				if (ep.bEndpointAddress == 0x02 && rv == 31) {
+				if (ep.bEndpointAddress != 0x00 && rv == 31) {
 					switch(io.data[15]) {
 						case USBMS_OPCODE_TEST_UNIT_READY:
 							printf(" [UnitReady]\n");
